@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Mesas - {{ restaurante.nombre }}{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                    <i class="fas fa-chair text-purple-600 mr-3"></i>
+                    Mesas de {{ restaurante.nombre }}
+                </h1>
+                <p class="text-gray-600">
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    {{ restaurante.direccion or 'Sin dirección' }}
+                </p>
+            </div>
+            <a href="/admin/restaurantes" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold transition">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Volver
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulario para Agregar Mesa -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-plus-circle text-purple-600 mr-2"></i>
+            Agregar Nueva Mesa
+        </h2>
+        <form method="POST" action="/admin/restaurantes/{{ restaurante.id }}/mesas/crear" class="flex flex-wrap gap-4 items-end">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Número de Mesa *
+                </label>
+                <input 
+                    type="number" 
+                    name="numero" 
+                    required
+                    min="1"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                    placeholder="Ej: 1"
+                >
+            </div>
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Capacidad (Personas) *
+                </label>
+                <input 
+                    type="number" 
+                    name="capacidad" 
+                    required
+                    min="1"
+                    max="20"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                    placeholder="Ej: 4"
+                >
+            </div>
+            <button 
+                type="submit" 
+                class="btn-primary text-white px-8 py-3 rounded-xl font-semibold shadow-lg"
+            >
+                <i class="fas fa-plus mr-2"></i>
+                Agregar Mesa
+            </button>
+        </form>
+    </div>
+
+    <!-- Lista de Mesas -->
+    {% if mesas %}
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">
+            <i class="fas fa-list text-purple-600 mr-2"></i>
+            Mesas Registradas ({{ mesas|length }})
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {% for mesa in mesas %}
+            <div class="border-2 border-gray-200 rounded-xl p-5 hover:border-purple-500 hover:shadow-lg transition">
+                <div class="text-center mb-4">
+                    <i class="fas fa-chair text-purple-600 text-4xl mb-3"></i>
+                    <h3 class="text-2xl font-bold text-gray-800">Mesa #{{ mesa.numero }}</h3>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-3 mb-4">
+                    <div class="flex items-center justify-center text-gray-700">
+                        <i class="fas fa-users mr-2"></i>
+                        <span class="font-semibold">{{ mesa.capacidad }} personas</span>
+                    </div>
+                </div>
+
+                <form method="POST" action="/admin/mesas/eliminar/{{ mesa.id }}" onsubmit="return confirm('¿Eliminar esta mesa?')">
+                    <button 
+                        type="submit" 
+                        class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold text-sm transition"
+                    >
+                        <i class="fas fa-trash-alt mr-1"></i>
+                        Eliminar
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl shadow-lg p-12 text-center">
+        <i class="fas fa-chair text-gray-300 text-6xl mb-4"></i>
+        <h3 class="text-2xl font-bold text-gray-700 mb-2">No hay mesas registradas</h3>
+        <p class="text-gray-600">Utiliza el formulario de arriba para agregar la primera mesa</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

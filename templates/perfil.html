@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - RestauBook{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Header -->
+    <div class="gradient-bg rounded-2xl shadow-xl p-8 mb-8">
+        <div class="flex items-center space-x-4">
+            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center">
+                <i class="fas fa-user text-purple-600 text-3xl"></i>
+            </div>
+            <div class="text-white">
+                <h1 class="text-3xl font-bold">Mi Perfil</h1>
+                <p class="text-purple-100">{{ user.email }}</p>
+                <span class="inline-block mt-2 px-3 py-1 bg-white bg-opacity-20 rounded-full text-sm font-semibold">
+                    <i class="fas fa-crown mr-1"></i>
+                    {{ user.role }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Información Personal -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-user-edit text-purple-600 mr-3"></i>
+                    Información Personal
+                </h2>
+                
+                <form method="POST" action="/perfil/editar" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Correo Electrónico
+                        </label>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            value="{{ user.email }}"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        >
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-200">
+                        <p class="text-sm font-semibold text-gray-700 mb-3">Cambiar Contraseña</p>
+                        
+                        <div class="mb-3">
+                            <label class="block text-xs text-gray-600 mb-1">Contraseña Actual</label>
+                            <input 
+                                type="password" 
+                                name="password_actual"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500"
+                                placeholder="Opcional"
+                            >
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-600 mb-1">Nueva Contraseña</label>
+                            <input 
+                                type="password" 
+                                name="password_nueva"
+                                minlength="6"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500"
+                                placeholder="Mínimo 6 caracteres"
+                            >
+                        </div>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold transition"
+                    >
+                        <i class="fas fa-save mr-2"></i>
+                        Guardar Cambios
+                    </button>
+                </form>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Estadísticas</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Total Reservas</span>
+                        <span class="font-bold text-purple-600">{{ reservas|length }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Pendientes</span>
+                        <span class="font-bold text-yellow-600">
+                            {{ reservas|selectattr('estado', 'equalto', 'PENDIENTE')|list|length }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Aceptadas</span>
+                        <span class="font-bold text-green-600">
+                            {{ reservas|selectattr('estado', 'equalto', 'ACEPTADA')|list|length }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mis Reservas -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <i class="fas fa-calendar-alt text-purple-600 mr-3"></i>
+                        Mis Reservas
+                    </h2>
+                    <a href="/reserve" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+                        <i class="fas fa-plus mr-2"></i>
+                        Nueva Reserva
+                    </a>
+                </div>
+
+                {% if reservas %}
+                <div class="space-y-4">
+                    {% for reserva in reservas %}
+                    <div class="border border-gray-200 rounded-xl p-5 hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">
+                                    {{ reserva.restaurant.nombre }}
+                                </h3>
+                                <p class="text-sm text-gray-600">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>
+                                    {{ reserva.restaurant.direccion }}
+                                </p>
+                            </div>
+                            <span class="badge badge-{{ 'warning' if reserva.estado == 'PENDIENTE' else 'success' if reserva.estado == 'ACEPTADA' else 'danger' }}">
+                                {{ reserva.estado }}
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-calendar text-purple-600 mr-2"></i>
+                                {{ reserva.fecha_hora.strftime('%d/%m/%Y') }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-clock text-purple-600 mr-2"></i>
+                                {{ reserva.fecha_hora.strftime('%H:%M') }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-users text-purple-600 mr-2"></i>
+                                {{ reserva.num_personas }} personas
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-chair text-purple-600 mr-2"></i>
+                                Mesa #{{ reserva.table.numero if reserva.table else 'N/A' }}
+                            </div>
+                        </div>
+
+                        {% if reserva.estado != 'CANCELADA' %}
+                        <div class="flex justify-end">
+                            <form method="POST" action="/reserva/cancelar/{{ reserva.id }}" onsubmit="return confirm('¿Estás seguro de que deseas cancelar esta reserva?')">
+                                <button 
+                                    type="submit" 
+                                    class="text-red-600 hover:text-red-800 text-sm font-semibold transition"
+                                >
+                                    <i class="fas fa-times-circle mr-1"></i>
+                                    Cancelar Reserva
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12">
+                    <i class="fas fa-calendar-times text-gray-300 text-6xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-700 mb-2">No tienes reservas</h3>
+                    <p class="text-gray-600 mb-6">Comienza haciendo tu primera reserva</p>
+                    <a href="/reserve" class="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition">
+                        <i class="fas fa-plus mr-2"></i>
+                        Hacer una Reserva
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

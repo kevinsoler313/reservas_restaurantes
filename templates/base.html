@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Reservas{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-success { background-color: #10b981; color: white; }
+        .badge-warning { background-color: #f59e0b; color: white; }
+        .badge-danger { background-color: #ef4444; color: white; }
+        .badge-info { background-color: #3b82f6; color: white; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="navbar-glass sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                            <i class="fas fa-utensils text-white text-xl"></i>
+                        </div>
+                        <span class="text-xl font-bold text-gray-800">RestauBook</span>
+                    </a>
+                    
+                    <div class="hidden md:flex ml-10 space-x-4">
+                        <a href="/" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition">
+                            <i class="fas fa-home mr-1"></i> Inicio
+                        </a>
+                        {% if session.user_id %}
+                        <a href="/reserve" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition">
+                            <i class="fas fa-calendar-plus mr-1"></i> Reservar
+                        </a>
+                        <a href="/perfil" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition">
+                            <i class="fas fa-user mr-1"></i> Mi Perfil
+                        </a>
+                        {% if session.role == 'ADMIN' %}
+                        <a href="/admin" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition">
+                            <i class="fas fa-cog mr-1"></i> Administración
+                        </a>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    {% if session.user_id %}
+                    <div class="flex items-center space-x-3">
+                        <span class="text-sm text-gray-600 hidden sm:block">
+                            <i class="fas fa-user-circle text-purple-600"></i> {{ session.email }}
+                        </span>
+                        <a href="/logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+                            <i class="fas fa-sign-out-alt mr-1"></i> Salir
+                        </a>
+                    </div>
+                    {% else %}
+                    <a href="/login" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition">
+                        <i class="fas fa-sign-in-alt mr-1"></i> Iniciar Sesión
+                    </a>
+                    <a href="/register" class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-medium">
+                        <i class="fas fa-user-plus mr-1"></i> Registrarse
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+            {% for category, message in messages %}
+            <div class="animate-fade-in bg-{{ 'green' if category == 'success' else 'red' if category == 'danger' else 'yellow' if category == 'warning' else 'blue' }}-100 border-l-4 border-{{ 'green' if category == 'success' else 'red' if category == 'danger' else 'yellow' if category == 'warning' else 'blue' }}-500 text-{{ 'green' if category == 'success' else 'red' if category == 'danger' else 'yellow' if category == 'warning' else 'blue' }}-700 p-4 rounded-lg shadow-md mb-4" role="alert">
+                <div class="flex items-center">
+                    <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' if category == 'warning' else 'times-circle' if category == 'danger' else 'info-circle' }} mr-3 text-xl"></i>
+                    <p class="font-medium">{{ message }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">RestauBook</h3>
+                    <p class="text-gray-400 text-sm">Sistema de gestión de reservas para restaurantes. Simplifica tu experiencia gastronómica.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Enlaces Rápidos</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/" class="text-gray-400 hover:text-white transition">Inicio</a></li>
+                        <li><a href="/reserve" class="text-gray-400 hover:text-white transition">Hacer Reserva</a></li>
+                        {% if session.role == 'ADMIN' %}
+                        <li><a href="/admin" class="text-gray-400 hover:text-white transition">Panel Admin</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contacto</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><i class="fas fa-envelope mr-2"></i> info@restaubook.com</li>
+                        <li><i class="fas fa-phone mr-2"></i> +57 (1) 234-5678</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i> Bogotá, Colombia</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2025 RestauBook. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('[role="alert"]');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

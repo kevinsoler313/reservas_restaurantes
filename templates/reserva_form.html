@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Hacer Reserva - RestauBook{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Header -->
+    <div class="gradient-bg rounded-2xl shadow-xl p-8 mb-8">
+        <h1 class="text-3xl font-bold text-white mb-2">
+            <i class="fas fa-calendar-check mr-3"></i>
+            Hacer una Reserva
+        </h1>
+        <p class="text-purple-100">Selecciona un restaurante, fecha y mesa disponible</p>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <form method="POST" action="/reserve">
+                <!-- Paso 1: Seleccionar Restaurante y Fecha -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center mr-3 text-sm">1</span>
+                        Selecciona Restaurante y Fecha
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-utensils text-purple-600 mr-2"></i>
+                                Restaurante
+                            </label>
+                            <select 
+                                name="restaurant_id" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                {% if selected_restaurant %}value="{{ selected_restaurant }}"{% endif %}
+                            >
+                                <option value="">-- Selecciona un restaurante --</option>
+                                {% for restaurante in restaurantes %}
+                                <option value="{{ restaurante.id }}" {% if selected_restaurant == restaurante.id %}selected{% endif %}>
+                                    {{ restaurante.nombre }} - {{ restaurante.direccion }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-calendar-alt text-purple-600 mr-2"></i>
+                                Fecha y Hora
+                            </label>
+                            <input 
+                                type="datetime-local" 
+                                name="fecha_hora" 
+                                required
+                                min="{{ now.strftime('%Y-%m-%dT%H:%M') }}"
+                                value="{{ fecha_hora }}"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                            >
+                            <p class="text-xs text-gray-500 mt-1">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Cada reserva tiene una duración de 2 horas
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <button 
+                            type="submit" 
+                            class="btn-primary text-white px-8 py-3 rounded-xl font-semibold shadow-lg"
+                        >
+                            <i class="fas fa-search mr-2"></i>
+                            Buscar Mesas Disponibles
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Seleccionar Mesa (solo si hay mesas disponibles) -->
+                {% if mesas_disponibles %}
+                <div class="border-t border-gray-200 pt-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center mr-3 text-sm">2</span>
+                        Selecciona una Mesa
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        {% for mesa in mesas_disponibles %}
+                        <label class="relative cursor-pointer">
+                            <input 
+                                type="radio" 
+                                name="mesa_id" 
+                                value="{{ mesa.id }}" 
+                                required
+                                class="peer sr-only"
+                            >
+                            <div class="border-2 border-gray-300 rounded-xl p-6 text-center transition hover:border-purple-500 peer-checked:border-purple-600 peer-checked:bg-purple-50">
+                                <i class="fas fa-chair text-4xl text-purple-600 mb-3"></i>
+                                <h3 class="text-lg font-bold text-gray-800 mb-2">Mesa #{{ mesa.numero }}</h3>
+                                <p class="text-sm text-gray-600">
+                                    <i class="fas fa-users mr-1"></i>
+                                    Capacidad: {{ mesa.capacidad }} personas
+                                </p>
+                                <div class="mt-3">
+                                    <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        Disponible
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="absolute top-3 right-3 w-6 h-6 bg-purple-600 rounded-full items-center justify-center text-white hidden peer-checked:flex">
+                                <i class="fas fa-check text-sm"></i>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-users text-purple-600 mr-2"></i>
+                            Número de Personas
+                        </label>
+                        <input 
+                            type="number" 
+                            name="num_personas" 
+                            min="1" 
+                            max="20" 
+                            required
+                            value="2"
+                            class="w-full md:w-1/3 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                        >
+                    </div>
+
+                    <div class="flex items-center justify-between bg-purple-50 rounded-xl p-6">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">Estás reservando para:</p>
+                            <p class="text-lg font-bold text-gray-800">
+                                {% if fecha_hora %}
+                                    {{ fecha_hora }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <button 
+                            type="submit" 
+                            class="btn-primary text-white px-8 py-3 rounded-xl font-semibold shadow-lg"
+                        >
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Confirmar Reserva
+                        </button>
+                    </div>
+                </div>
+                {% elif selected_restaurant and fecha_hora %}
+                <div class="border-t border-gray-200 pt-8">
+                    <div class="text-center py-12">
+                        <i class="fas fa-calendar-times text-gray-300 text-6xl mb-4"></i>
+                        <h3 class="text-2xl font-bold text-gray-700 mb-2">No hay mesas disponibles</h3>
+                        <p class="text-gray-600 mb-6">
+                            Lo sentimos, no hay mesas disponibles para la fecha y hora seleccionadas.
+                            Por favor, intenta con otra fecha u hora.
+                        </p>
+                        <button 
+                            type="button"
+                            onclick="window.location.reload()"
+                            class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition"
+                        >
+                            <i class="fas fa-redo mr-2"></i>
+                            Intentar de Nuevo
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Información útil -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <i class="fas fa-clock text-purple-600 text-3xl mb-3"></i>
+                <h3 class="font-bold text-gray-800 mb-2">Duración</h3>
+                <p class="text-sm text-gray-600">Cada reserva tiene una duración de 2 horas</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <i class="fas fa-bell text-purple-600 text-3xl mb-3"></i>
+                <h3 class="font-bold text-gray-800 mb-2">Notificación</h3>
+                <p class="text-sm text-gray-600">Recibirás confirmación inmediata de tu reserva</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 text-center">
+                <i class="fas fa-times-circle text-purple-600 text-3xl mb-3"></i>
+                <h3 class="font-bold text-gray-800 mb-2">Cancelación</h3>
+                <p class="text-sm text-gray-600">Puedes cancelar desde tu perfil en cualquier momento</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Set minimum datetime to now
+document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.querySelector('input[type="datetime-local"]');
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    dateInput.min = now.toISOString().slice(0, 16);
+});
+</script>
+{% endblock %}

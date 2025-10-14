@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Administración - RestauBook{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Header -->
+    <div class="gradient-bg rounded-2xl shadow-xl p-8 mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-cog mr-3"></i>
+                    Panel de Administración
+                </h1>
+                <p class="text-purple-100">Gestiona reservas, restaurantes y usuarios</p>
+            </div>
+            <div class="text-white text-right hidden md:block">
+                <p class="text-sm text-purple-100">Administrador</p>
+                <p class="font-semibold">{{ session.email }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-semibold mb-1">Total Reservas</p>
+                    <p class="text-3xl font-bold text-purple-600">{{ total_reservas }}</p>
+                </div>
+                <div class="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-calendar-check text-purple-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-semibold mb-1">Pendientes</p>
+                    <p class="text-3xl font-bold text-yellow-600">{{ reservas_pendientes }}</p>
+                </div>
+                <div class="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-semibold mb-1">Restaurantes</p>
+                    <p class="text-3xl font-bold text-blue-600">{{ total_restaurantes }}</p>
+                </div>
+                <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-utensils text-blue-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm font-semibold mb-1">Usuarios</p>
+                    <p class="text-3xl font-bold text-green-600">{{ total_usuarios }}</p>
+                </div>
+                <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-users text-green-600 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menú de Navegación -->
+    <div class="bg-white rounded-xl shadow-lg mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+            <a href="/admin/restaurantes" class="p-6 hover:bg-purple-50 transition text-center group">
+                <i class="fas fa-utensils text-4xl text-purple-600 mb-3 group-hover:scale-110 transition"></i>
+                <h3 class="font-bold text-gray-800 mb-1">Gestionar Restaurantes</h3>
+                <p class="text-sm text-gray-600">Crear, editar y eliminar restaurantes</p>
+            </a>
+            <a href="#reservas" class="p-6 hover:bg-purple-50 transition text-center group">
+                <i class="fas fa-calendar-alt text-4xl text-purple-600 mb-3 group-hover:scale-110 transition"></i>
+                <h3 class="font-bold text-gray-800 mb-1">Gestionar Reservas</h3>
+                <p class="text-sm text-gray-600">Ver y administrar todas las reservas</p>
+            </a>
+            <a href="/admin/usuarios" class="p-6 hover:bg-purple-50 transition text-center group">
+                <i class="fas fa-users text-4xl text-purple-600 mb-3 group-hover:scale-110 transition"></i>
+                <h3 class="font-bold text-gray-800 mb-1">Gestionar Usuarios</h3>
+                <p class="text-sm text-gray-600">Administrar cuentas de usuario</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabla de Reservas -->
+    <div id="reservas" class="bg-white rounded-2xl shadow-xl p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">
+                <i class="fas fa-list mr-3 text-purple-600"></i>
+                Todas las Reservas
+            </h2>
+        </div>
+
+        {% if reservas %}
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b-2 border-gray-200">
+                        <th class="text-left py-4 px-4 font-semibold text-gray-700">ID</th>
+                        <th class="text-left py-4 px-4 font-semibold text-gray-700">Usuario</th>
+                        <th class="text-left py-4 px-4 font-semibold text-gray-700">Restaurante</th>
+                        <th class="text-left py-4 px-4 font-semibold text-gray-700">Mesa</th>
+                        <th class="text-left py-4 px-4 font-semibold text-gray-700">Fecha/Hora</th>
+                        <th class="text-left py-4 px-4 font-semibold text-gray-700">Personas</th>
+                        <th class="text-left py-4 px-4 font-semibold text-gray-700">Estado</th>
+                        <th class="text-center py-4 px-4 font-semibold text-gray-700">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for reserva in reservas %}
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="py-4 px-4 font-mono text-sm text-gray-600">{{ reserva.id }}</td>
+                        <td class="py-4 px-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-user-circle text-purple-600 mr-2"></i>
+                                <span class="text-sm">{{ reserva.user.email }}</span>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="text-sm font-semibold text-gray-800">{{ reserva.restaurant.nombre }}</div>
+                            <div class="text-xs text-gray-500">{{ reserva.restaurant.direccion }}</div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="text-sm font-semibold">Mesa {{ reserva.table.numero if reserva.table else 'N/A' }}</span>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="text-sm">{{ reserva.fecha_hora.strftime('%d/%m/%Y') }}</div>
+                            <div class="text-xs text-gray-500">{{ reserva.fecha_hora.strftime('%H:%M') }}</div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="text-sm">{{ reserva.num_personas }}</span>
+                        </td>
+                        <td class="py-4 px-4">
+                            <form method="POST" action="/admin/reservas/actualizar/{{ reserva.id }}" class="inline">
+                                <select 
+                                    name="estado" 
+                                    onchange="this.form.submit()"
+                                    class="text-xs px-2 py-1 rounded-full font-semibold border-0 cursor-pointer
+                                    {% if reserva.estado == 'PENDIENTE' %}bg-yellow-100 text-yellow-800
+                                    {% elif reserva.estado == 'ACEPTADA' %}bg-green-100 text-green-800
+                                    {% else %}bg-red-100 text-red-800{% endif %}"
+                                >
+                                    <option value="PENDIENTE" {% if reserva.estado == 'PENDIENTE' %}selected{% endif %}>PENDIENTE</option>
+                                    <option value="ACEPTADA" {% if reserva.estado == 'ACEPTADA' %}selected{% endif %}>ACEPTADA</option>
+                                    <option value="CANCELADA" {% if reserva.estado == 'CANCELADA' %}selected{% endif %}>CANCELADA</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td class="py-4 px-4 text-center">
+                            <form method="POST" action="/admin/reservas/eliminar/{{ reserva.id }}" class="inline" onsubmit="return confirm('¿Eliminar esta reserva?')">
+                                <button type="submit" class="text-red-600 hover:text-red-800 transition">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-12">
+            <i class="fas fa-inbox text-gray-300 text-6xl mb-4"></i>
+            <h3 class="text-xl font-bold text-gray-700 mb-2">No hay reservas registradas</h3>
+            <p class="text-gray-600">Las reservas aparecerán aquí cuando los usuarios las realicen</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

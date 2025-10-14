@@ -1,0 +1,9 @@
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+header { background: #222; color: white; padding: 10px; }
+nav a { color: white; margin-right: 10px; text-decoration: none; }
+main { padding: 20px; }
+.flashes { list-style: none; padding: 0; }
+.flash { padding: 8px; margin-bottom: 6px; border-radius: 4px; }
+.flash.success { background: #c8f7c5; }
+.flash.danger { background: #f8c8c8; }
+.flash.warning { background: #fff0b3; }
