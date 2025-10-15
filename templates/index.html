@@ -38,40 +38,8 @@
     </div>
 </div>
 
-<!-- Features Section -->
-<div class="mb-16 animate-fade-in" style="animation-delay: 0.2s;">
-    <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">
-        ¿Por qué elegir RestauBook?
-    </h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-white rounded-2xl shadow-lg p-8 text-center card-hover">
-            <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-clock text-white text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-3">Reservas Instantáneas</h3>
-            <p class="text-gray-600">Reserva tu mesa en tiempo real y recibe confirmación inmediata.</p>
-        </div>
-        
-        <div class="bg-white rounded-2xl shadow-lg p-8 text-center card-hover">
-            <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-mobile-alt text-white text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-3">Fácil y Rápido</h3>
-            <p class="text-gray-600">Interfaz intuitiva diseñada para que reserves en menos de 2 minutos.</p>
-        </div>
-        
-        <div class="bg-white rounded-2xl shadow-lg p-8 text-center card-hover">
-            <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-shield-alt text-white text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-3">100% Seguro</h3>
-            <p class="text-gray-600">Tus datos están protegidos con los más altos estándares de seguridad.</p>
-        </div>
-    </div>
-</div>
-
 <!-- Restaurants Section -->
-<div class="animate-fade-in" style="animation-delay: 0.4s;">
+<div class="animate-fade-in" style="animation-delay: 0.2s;">
     <div class="flex justify-between items-center mb-8">
         <h2 class="text-3xl font-bold text-gray-800">
             Restaurantes Disponibles
@@ -100,7 +68,7 @@
                 <p class="text-gray-600 mb-4 line-clamp-2">
                     {{ restaurante.descripcion or 'Disfruta de una experiencia gastronómica única.' }}
                 </p>
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between mb-4">
                     <span class="text-sm text-gray-500">
                         <i class="fas fa-chair mr-1"></i>
                         {{ restaurante.tables|length }} mesas
@@ -135,22 +103,4 @@
     </div>
     {% endif %}
 </div>
-
-<!-- CTA Section -->
-{% if not session.user_id %}
-<div class="mt-20 gradient-bg rounded-3xl shadow-2xl overflow-hidden animate-fade-in" style="animation-delay: 0.6s;">
-    <div class="px-6 py-12 sm:px-12 text-center">
-        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
-            ¿Listo para comenzar?
-        </h2>
-        <p class="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-            Únete a miles de comensales que ya disfrutan de la mejor experiencia de reservas.
-        </p>
-        <a href="/register" class="inline-block bg-white text-purple-600 px-10 py-4 rounded-xl font-bold hover:bg-gray-100 transition shadow-lg hover:shadow-xl transform hover:scale-105">
-            <i class="fas fa-rocket mr-2"></i>
-            Crear Cuenta Gratis
-        </a>
-    </div>
-</div>
-{% endif %}
 {% endblock %}

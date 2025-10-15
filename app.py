@@ -14,10 +14,6 @@ def create_app():
 
 app = create_app()
 
-@app.context_processor
-def inject_now():
-    """Inyecta la variable 'now' en todas las plantillas Jinja2"""
-    return {'now': datetime.now()}
 # Decorador para rutas protegidas
 def login_required(f):
     @wraps(f)
@@ -146,6 +142,9 @@ def reserve():
     mesas_disponibles = []
     selected_restaurant = None
     fecha_hora = None
+    
+    # Verificar si viene un restaurante preseleccionado desde la URL (GET parameter)
+    preselected_restaurant = request.args.get('restaurant_id', type=int)
 
     if request.method == "POST":
         selected_restaurant = request.form.get("restaurant_id")
@@ -159,7 +158,8 @@ def reserve():
                 mesas_disponibles=mesas_disponibles,
                 selected_restaurant=selected_restaurant,
                 fecha_hora=fecha_hora,
-                now=datetime.now()
+                now=datetime.now(),
+                preselected_restaurant=preselected_restaurant or selected_restaurant
             )
 
         # Convertir fecha y definir duración de la reserva
@@ -217,7 +217,8 @@ def reserve():
                     mesas_disponibles=mesas_disponibles,
                     selected_restaurant=selected_restaurant,
                     fecha_hora=fecha_hora_str,
-                    now=datetime.now()
+                    now=datetime.now(),
+                    preselected_restaurant=preselected_restaurant or selected_restaurant
                 )
 
             # Buscar todas las reservas activas de esa mesa
@@ -269,7 +270,8 @@ def reserve():
             mesas_disponibles=mesas_disponibles,
             selected_restaurant=int(selected_restaurant),
             fecha_hora=fecha_hora_str,
-            now=datetime.now()
+            now=datetime.now(),
+            preselected_restaurant=preselected_restaurant or int(selected_restaurant)
         )
 
     # GET – primera vez
@@ -277,7 +279,8 @@ def reserve():
         "reserva_form.html",
         restaurantes=restaurantes,
         mesas_disponibles=mesas_disponibles,
-        now=datetime.now()
+        now=datetime.now(),
+        preselected_restaurant=preselected_restaurant
     )
 
 @app.route('/reserva/cancelar/<int:reserva_id>', methods=['POST'])
