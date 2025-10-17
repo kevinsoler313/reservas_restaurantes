@@ -246,15 +246,18 @@ def reserve():
                     fecha_hora=fecha_hora_str
                 )
 
-            # Crear nueva reserva
-            nueva_reserva = Reservation(
-                user_id=user_id,
-                restaurant_id=selected_restaurant,
-                table_id=mesa_id,
-                fecha_hora=fecha_hora,
-                num_personas=num_personas,
-                estado="PENDIENTE"
-            )
+            # ✅ Crear nueva reserva usando el patrón Builder
+            builder = ReservationBuilder()
+            nueva_reserva = (builder
+                .reset()
+                .set_user(user_id)
+                .set_restaurant(selected_restaurant)
+                .set_table(mesa_id)
+                .set_datetime(fecha_hora)
+                .set_num_personas(num_personas)
+                .build())
+            
+            nueva_reserva.estado = "PENDIENTE"
             db.session.add(nueva_reserva)
             db.session.commit()
             flash("¡Reserva confirmada con éxito!", "success")
