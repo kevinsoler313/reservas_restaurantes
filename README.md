@@ -2,37 +2,37 @@
 
 Sistema completo de gestión de reservas para restaurantes desarrollado con Flask, con diseño moderno y responsivo.
 
-## ✨ Características Principales
+## Características Principales
 
 ### Para Clientes
-- 🔐 **Registro e inicio de sesión seguro**
-- 📅 **Sistema de reservas intuitivo** con selección de fecha, hora y mesa
-- 👤 **Perfil de usuario** con gestión de reservas
-- 🔔 **Notificaciones en tiempo real** de confirmaciones y cambios
-- 📱 **Diseño 100% responsivo** para móviles, tablets y desktop
+- **Registro e inicio de sesión seguro**
+- **Sistema de reservas intuitivo** con selección de fecha, hora y mesa
+- **Perfil de usuario** con gestión de reservas
+- **Notificaciones en tiempo real** de confirmaciones y cambios
+- **Diseño 100% responsivo** para móviles, tablets y desktop
 
 ### Para Administradores
-- 🏢 **CRUD completo de restaurantes** (Crear, Leer, Actualizar, Eliminar)
-- 🪑 **Gestión de mesas** por restaurante
-- 📊 **Panel de administración** con estadísticas en tiempo real
-- 👥 **Gestión de usuarios** del sistema
-- ✅ **Control de reservas** con actualización de estados
-- 🎯 **Dashboard intuitivo** con métricas clave
+- **CRUD completo de restaurantes** (Crear, Leer, Actualizar, Eliminar)
+- **Gestión de mesas** por restaurante
+- **Panel de administración** con estadísticas en tiempo real
+- **Gestión de usuarios** del sistema
+- **Control de reservas** con actualización de estados
+- **Dashboard intuitivo** con métricas clave
 
 ### Características Técnicas
-- ✨ Diseño moderno con **Tailwind CSS**
-- 🎨 Animaciones y transiciones suaves
-- 🔒 Autenticación segura con **hash de contraseñas**
-- 🛡️ Validaciones robustas en frontend y backend
-- 📦 Base de datos **SQLite** fácil de configurar
-- 🚀 Arquitectura modular y escalable
+- Diseño moderno con **Tailwind CSS**
+- Animaciones y transiciones suaves
+- Autenticación segura con **hash de contraseñas**
+- Validaciones robustas en frontend y backend
+- Base de datos **SQLite** fácil de configurar
+- Arquitectura modular y escalable
 
-## 📋 Requisitos
+## Requisitos
 
 - Python 3.7 o superior
 - pip (gestor de paquetes de Python)
 
-## 🚀 Instalación
+## Instalación
 
 ### 1. Crear entorno virtual
 
@@ -77,13 +77,13 @@ python app.py
 
 La aplicación estará disponible en: **http://127.0.0.1:5000**
 
-## 👤 Credenciales por Defecto
+## Credenciales por Defecto
 
 ### Administrador
 - **Email:** admin@example.com
 - **Contraseña:** admin123
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 restaurant-booking/
@@ -116,7 +116,7 @@ restaurant-booking/
     └── editar_restaurante.html
 ```
 
-## 🎯 Uso del Sistema
+## Uso del Sistema
 
 ### Como Cliente
 
@@ -159,7 +159,7 @@ restaurant-booking/
    - Ver todos los usuarios registrados
    - Eliminar usuarios (excepto administradores)
 
-## 🔧 Configuración Avanzada
+## Configuración Avanzada
 
 ### Cambiar la Clave Secreta
 
@@ -180,7 +180,7 @@ Por defecto usa SQLite. Para cambiar a PostgreSQL u otra:
 SQLALCHEMY_DATABASE_URI = 'postgresql://usuario:password@localhost/dbname'
 ```
 
-## 🎨 Características de Diseño
+## Características de Diseño
 
 - **Paleta de colores:** Gradientes púrpura modernos
 - **Iconografía:** Font Awesome 6.4.0
@@ -189,22 +189,14 @@ SQLALCHEMY_DATABASE_URI = 'postgresql://usuario:password@localhost/dbname'
 - **Efectos:** Animaciones fade-in, hover effects, shadows
 - **Responsive:** Mobile-first design
 
-## 🛡️ Seguridad
-
-- ✅ Contraseñas hasheadas con Werkzeug
-- ✅ Validación de formularios
-- ✅ Protección de rutas con decoradores
-- ✅ Prevención de eliminación de administradores
-- ✅ Validación de conflictos de reservas
-
-## 📝 Notas Importantes
+## Notas Importantes
 
 - **Duración de reservas:** Todas las reservas tienen 2 horas de duración
 - **Conflictos:** El sistema valida automáticamente conflictos de horarios
 - **Mesas:** No se pueden eliminar mesas con reservas activas
 - **Administradores:** No se pueden eliminar cuentas de administrador
 
-## 🐛 Solución de Problemas
+## Solución de Problemas
 
 ### Error al ejecutar create_db.py
 ```bash
@@ -229,37 +221,4 @@ rm reservas.db
 python create_db.py
 ```
 
-## 🚀 Mejoras Futuras
-
-- [ ] Notificaciones por email
-- [ ] Integración con pasarelas de pago
-- [ ] Sistema de reseñas y calificaciones
-- [ ] Búsqueda avanzada de restaurantes
-- [ ] Exportación de reportes en PDF/Excel
-- [ ] API REST para aplicaciones móviles
-- [ ] Sistema de cupones y descuentos
-- [ ] Integración con Google Maps
-
-## 👨‍💻 Desarrollo
-
-Para contribuir al proyecto:
-
-1. Fork el repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto es de código abierto y está disponible bajo la licencia MIT.
-
-## 💬 Soporte
-
-Para reportar bugs o solicitar características:
-- Crea un Issue en el repositorio
-- Contacta al equipo de desarrollo
-
----
-
-Desarrollado con ❤️ usando Flask y Tailwind CSS
+Desarrollado con Flask y Tailwind CSS
