@@ -1,21 +1,21 @@
-# 🎨 Patrones Creacionales Implementados en RestauBook
+# Patrones Creacionales Implementados en RestauBook
 
-## 📋 Índice
+## Índice
 1. [Factory Method Pattern](#factory-method-pattern)
 2. [Builder Pattern](#builder-pattern)
 3. [Comparación y Casos de Uso](#comparación)
 
 ---
 
-## 1️⃣ Factory Method Pattern
+## 1 Factory Method Pattern
 
-### 📍 Ubicación
+### Ubicación
 **Archivo:** `services/factories.py`
 
-### 🎯 Propósito
+### Propósito
 Encapsular la creación compleja de objetos `User`, centralizando la lógica de validación, encriptación de contraseñas y persistencia en la base de datos.
 
-### 💻 Implementación
+### Implementación
 
 ```python
 class UserFactory:
@@ -39,7 +39,7 @@ class UserFactory:
         return user
 ```
 
-### 📍 Dónde se Usa
+### Dónde se Usa
 
 #### 1. En `create_db.py` (Inicialización)
 ```python
@@ -66,7 +66,7 @@ def register():
     return redirect(url_for('login'))
 ```
 
-### ✅ Ventajas Obtenidas
+### Ventajas Obtenidas
 
 1. **Encapsulación:** Toda la lógica de creación en un solo lugar
 2. **Validación centralizada:** El rol se valida antes de crear
@@ -81,15 +81,15 @@ def register():
 
 ---
 
-## 2️⃣ Builder Pattern
+## Builder Pattern
 
-### 📍 Ubicación
+### Ubicación
 **Archivo:** `services/reservation_service.py`
 
-### 🎯 Propósito
+### Propósito
 Construir objetos `Reservation` complejos paso a paso, permitiendo una construcción flexible y validada con interfaz fluida (method chaining).
 
-### 💻 Implementación
+### Implementación
 
 ```python
 class ReservationBuilder:
@@ -109,7 +109,7 @@ class ReservationBuilder:
     def set_user(self, user_id):
         """Establece el usuario"""
         self._user_id = user_id
-        return self  # ✅ Method chaining
+        return self  # Method chaining
 
     def set_restaurant(self, restaurant_id):
         """Establece el restaurante"""
@@ -153,7 +153,7 @@ class ReservationBuilder:
         )
 ```
 
-### 📍 Dónde se Usa
+### Dónde se Usa
 
 #### En `app.py` - Ruta `/reserve` (POST)
 ```python
@@ -162,7 +162,7 @@ class ReservationBuilder:
 def reserve():
     # ... validaciones previas ...
     
-    # ✅ Uso del patrón Builder
+    # Uso del patrón Builder
     builder = ReservationBuilder()
     nueva_reserva = (builder
         .reset()
@@ -181,7 +181,7 @@ def reserve():
     return redirect(url_for("perfil"))
 ```
 
-### ✅ Ventajas Obtenidas
+### Ventajas Obtenidas
 
 1. **Interfaz Fluida:** Method chaining hace el código más legible
 2. **Construcción Flexible:** Puedes omitir parámetros opcionales
@@ -189,9 +189,9 @@ def reserve():
 4. **Inmutabilidad del Builder:** Cada `set_*` retorna `self`
 5. **Código Limpio:** Más expresivo que constructor con muchos parámetros
 
-### 🆚 Comparación: Sin Builder vs Con Builder
+### Comparación: Sin Builder vs Con Builder
 
-#### ❌ Sin Builder (Constructor Directo)
+#### Sin Builder (Constructor Directo)
 ```python
 # Difícil de leer, orden de parámetros confuso
 nueva_reserva = Reservation(
@@ -204,7 +204,7 @@ nueva_reserva = Reservation(
 )
 ```
 
-#### ✅ Con Builder (Interfaz Fluida)
+#### Con Builder (Interfaz Fluida)
 ```python
 # Legible, claro, flexible
 nueva_reserva = (builder
@@ -216,7 +216,7 @@ nueva_reserva = (builder
     .build())
 ```
 
-### 🎯 Principios SOLID Aplicados
+### Principios SOLID Aplicados
 
 - **Single Responsibility:** Solo construye objetos Reservation
 - **Open/Closed:** Fácil agregar nuevos campos sin romper código existente
@@ -224,9 +224,9 @@ nueva_reserva = (builder
 
 ---
 
-## 3️⃣ Comparación y Casos de Uso
+## 3️Comparación y Casos de Uso
 
-### 📊 Factory vs Builder
+### Factory vs Builder
 
 | Aspecto | Factory Method | Builder |
 |---------|---------------|---------|
@@ -237,39 +237,39 @@ nueva_reserva = (builder
 | **Validación** | En el momento de creación | Al final (en `build()`) |
 | **Uso en proyecto** | Crear usuarios | Crear reservas |
 
-### 🎯 Cuándo Usar Cada Uno
+### Cuándo Usar Cada Uno
 
 #### Usar Factory cuando:
-- ✅ Necesitas crear objetos de una familia (User: CLIENTE, ADMIN)
-- ✅ La creación involucra lógica compleja (validación, encriptación)
-- ✅ Quieres ocultar la complejidad de la creación
-- ✅ Los objetos son relativamente simples
+- Necesitas crear objetos de una familia (User: CLIENTE, ADMIN)
+- La creación involucra lógica compleja (validación, encriptación)
+- Quieres ocultar la complejidad de la creación
+- Los objetos son relativamente simples
 
 **Ejemplo en el proyecto:** `UserFactory.create_user()`
 
 #### Usar Builder cuando:
-- ✅ El objeto tiene muchos parámetros (>5)
-- ✅ Algunos parámetros son opcionales
-- ✅ Quieres una construcción paso a paso
-- ✅ Necesitas diferentes representaciones del mismo objeto
+- El objeto tiene muchos parámetros (>5)
+- Algunos parámetros son opcionales
+- Quieres una construcción paso a paso
+- Necesitas diferentes representaciones del mismo objeto
 
 **Ejemplo en el proyecto:** `ReservationBuilder`
 
 ---
 
-## 🔄 Flujo Completo de Uso
+## Flujo Completo de Uso
 
 ### Escenario: Usuario registra y hace una reserva
 
 ```python
-# 1️⃣ Registro de usuario (Factory Pattern)
+# 1 Registro de usuario (Factory Pattern)
 new_user = UserFactory.create_user(
     role='CLIENTE',
     email='cliente@email.com',
     password='secreto123'
 )
 
-# 2️⃣ Crear reserva (Builder Pattern)
+# 2 Crear reserva (Builder Pattern)
 builder = ReservationBuilder()
 reserva = (builder
     .reset()
@@ -280,14 +280,14 @@ reserva = (builder
     .set_num_personas(4)
     .build())
 
-# 3️⃣ Guardar en BD
+# 3️ Guardar en BD
 db.session.add(reserva)
 db.session.commit()
 ```
 
 ---
 
-## 📈 Beneficios Generales
+## Beneficios Generales
 
 ### 1. **Mantenibilidad**
 - Código más limpio y organizado
@@ -311,7 +311,7 @@ db.session.commit()
 
 ---
 
-## 🎓 Conceptos Clave
+## Conceptos Clave
 
 ### Method Chaining (Encadenamiento de Métodos)
 ```python
@@ -330,13 +330,13 @@ reserva = builder.build()  # Solo aquí se crea
 ### Validación Lazy
 ```python
 # No valida hasta el final
-builder.set_user(1)  # ✅ No valida aún
-builder.build()      # ✅ Aquí valida todo
+builder.set_user(1)  # No valida aún
+builder.build()      # Aquí valida todo
 ```
 
 ---
 
-## 📚 Referencias
+## Referencias
 
 ### Archivos Relacionados
 - `services/factories.py` - Implementación de Factory
@@ -351,7 +351,7 @@ builder.build()      # ✅ Aquí valida todo
 
 ---
 
-## ✅ Checklist de Implementación
+## Checklist de Implementación
 
 - [x] Factory Pattern implementado
 - [x] Factory Pattern en uso (UserFactory)
